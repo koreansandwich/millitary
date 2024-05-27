@@ -25,16 +25,24 @@ class Diary {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'date': date,
-        'content': content,
+        DiaryFields.id: id,
+        DiaryFields.date: date,
+        DiaryFields.content: content,
       };
 
   factory Diary.fromJson(Map<String, dynamic> json) => Diary(
-        id: json['id'],
-        date: json['date'],
-        content: json['content'],
+        id: json[DiaryFields.id],
+        date: json[DiaryFields.date],
+        content: json[DiaryFields.content],
       );
+}
+
+class DiaryFields {
+  static final List<String> values = [id, date, content];
+
+  static const String id = '_id';
+  static const String date = 'date';
+  static const String content = 'content';
 }
 
 class DiaryDatabase {
@@ -91,8 +99,7 @@ CREATE TABLE diaries (
   Future<void> insertDiary(Diary diary) async {
     final db = await instance.database;
 
-    final id = await db.insert('diaries', diary.toJson());
-    print('Diary inserted with id: $id');
+    await db.insert('diaries', diary.toJson());
   }
 
   Future<void> updateDiary(Diary diary) async {
@@ -121,12 +128,4 @@ CREATE TABLE diaries (
 
     db.close();
   }
-}
-
-class DiaryFields {
-  static final List<String> values = [id, date, content];
-
-  static const String id = '_id';
-  static const String date = 'date';
-  static const String content = 'content';
 }
