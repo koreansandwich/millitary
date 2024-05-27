@@ -1,32 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:my_diary_app/db/user_database.dart';
-import 'calendar_screen.dart';
-import 'signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignupScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
 
-  Future<void> _login() async {
+  Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      User? user = await UserDatabase.instance.getUser(_username, _password);
-      if (user != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CalendarScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid username or password')),
-        );
-      }
+      User newUser = User(username: _username, password: _password);
+      await UserDatabase.instance.insertUser(newUser);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign Up Successful')),
+      );
+      Navigator.pop(context);
     }
   }
 
@@ -34,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Sign Up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(labelText: 'Username'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
+                        return 'Please enter a username';
                       }
                       return null;
                     },
@@ -62,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return 'Please enter a password';
                       }
                       return null;
                     },
@@ -72,24 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _login,
-                    child: Text('Login'),
-                  ),
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignupScreen()),
-                      );
-                    },
+                    onPressed: _signup,
                     child: Text('Sign Up'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // 비밀번호 찾기 로직 추가 예정
-                    },
-                    child: Text('Forgot Password?'),
                   ),
                 ],
               ),
