@@ -6,8 +6,10 @@ import 'package:my_diary_app/db/diary_database.dart';
 class DiaryScreen extends StatefulWidget {
   final DateTime selectedDay;
   final Diary? diary;
+  final int userId;
 
-  const DiaryScreen({Key? key, required this.selectedDay, this.diary})
+  const DiaryScreen(
+      {Key? key, required this.selectedDay, this.diary, required this.userId})
       : super(key: key);
 
   @override
@@ -17,12 +19,14 @@ class DiaryScreen extends StatefulWidget {
 class _DiaryScreenState extends State<DiaryScreen> {
   final TextEditingController _diaryController = TextEditingController();
   File? _image;
+  bool _isPublic = true;
 
   @override
   void initState() {
     super.initState();
     if (widget.diary != null) {
       _diaryController.text = widget.diary!.content;
+      _isPublic = widget.diary!.isPublic;
       // 이미지 불러오는 코드 추가 필요
     }
   }
@@ -46,19 +50,31 @@ class _DiaryScreenState extends State<DiaryScreen> {
       return;
     }
 
-    if (widget.diary == null) {
-      final diary = Diary(
-        date: widget.selectedDay.toIso8601String(),
-        content: _diaryController.text,
+    try {
+      if (widget.diary == null) {
+        final diary = Diary(
+          date: widget.selectedDay.toIso8601String(),
+          content: _diaryController.text,
+          isPublic: _isPublic,
+          userId: widget.userId, // 사용자 식별자 추가
+        );
+        await DiaryDatabase.instance.insertDiary(diary);
+      } else {
+        final updatedDiary = widget.diary!.copyWith(
+          content: _diaryController.text,
+          isPublic: _isPublic,
+          userId: widget.userId, // 사용자 식별자 업데이트
+        );
+        await DiaryDatabase.instance.updateDiary(updatedDiary);
+      }
+      if (mounted) {
+        Navigator.pop(context, true); // 캘린더 화면으로 돌아가기
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')),
       );
-      await DiaryDatabase.instance.insertDiary(diary);
-    } else {
-      final updatedDiary = widget.diary!.copyWith(
-        content: _diaryController.text,
-      );
-      await DiaryDatabase.instance.updateDiary(updatedDiary);
     }
-    Navigator.pop(context, true); // 캘린더 화면으로 돌아가기
   }
 
   @override
@@ -91,6 +107,20 @@ class _DiaryScreenState extends State<DiaryScreen> {
             ElevatedButton(
               onPressed: _pickImage,
               child: Text('Pick Image'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Public'),
+                Switch(
+                  value: _isPublic,
+                  onChanged: (value) {
+                    setState(() {
+                      _isPublic = value;
+                    });
+                  },
+                ),
+              ],
             ),
             SizedBox(height: 20),
             ElevatedButton(

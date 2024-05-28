@@ -96,6 +96,24 @@ CREATE TABLE users (
     }
   }
 
+  Future<User?> fetchUserByUsername(String username) async {
+    // 새로운 메소드 추가
+    final db = await instance.database;
+
+    final maps = await db.query(
+      'users',
+      columns: UserFields.values,
+      where: '${UserFields.username} = ?',
+      whereArgs: [username],
+    );
+
+    if (maps.isNotEmpty) {
+      return User.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
   Future<void> insertUser(User user) async {
     final db = await instance.database;
 
@@ -121,6 +139,13 @@ CREATE TABLE users (
       where: '${UserFields.id} = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> deleteDatabaseFile() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'diaries.db');
+
+    await deleteDatabase(path);
   }
 
   Future close() async {

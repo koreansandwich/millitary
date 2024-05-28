@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_diary_app/db/user_database.dart';
 import 'calendar_screen.dart';
-import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,14 +12,17 @@ class _LoginScreenState extends State<LoginScreen> {
   String _username = '';
   String _password = '';
 
-  Future<void> _login() async {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
       User? user = await UserDatabase.instance.getUser(_username, _password);
       if (user != null) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CalendarScreen()),
+          MaterialPageRoute(
+            builder: (context) => CalendarScreen(userId: user.id!), // userId 전달
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -48,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Username'),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value!.isEmpty) {
                         return 'Please enter your username';
                       }
                       return null;
@@ -61,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(labelText: 'Password'),
                     obscureText: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value!.isEmpty) {
                         return 'Please enter your password';
                       }
                       return null;
@@ -78,18 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignupScreen()),
-                      );
+                      // 회원가입 화면으로 이동하는 로직 추가 예정
                     },
                     child: Text('Sign Up'),
                   ),
                   TextButton(
                     onPressed: () {
-                      // 비밀번호 찾기 로직 추가 예정
+                      // 아이디/비밀번호 분실 화면으로 이동하는 로직 추가 예정
                     },
-                    child: Text('Forgot Password?'),
+                    child: Text('Forgot Username/Password?'),
                   ),
                 ],
               ),

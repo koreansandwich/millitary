@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my_diary_app/screens/other_diaries_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:my_diary_app/db/diary_database.dart';
 import 'diary_screen.dart';
+import 'login_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({Key? key}) : super(key: key);
+  final int userId;
+  const CalendarScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   _CalendarScreenState createState() => _CalendarScreenState();
@@ -25,7 +28,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Future<void> _fetchDiary() async {
     if (_selectedDay != null) {
       final diary = await DiaryDatabase.instance
-          .fetchDiaryByDate(_selectedDay!.toIso8601String());
+          .fetchDiaryByDate(_selectedDay!.toIso8601String(), widget.userId);
       setState(() {
         _diary = diary;
       });
@@ -47,6 +50,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         builder: (context) => DiaryScreen(
           selectedDay: _selectedDay!,
           diary: _diary,
+          userId: widget.userId,
         ),
       ),
     );
@@ -56,11 +60,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
   }
 
+  Future<void> _navigateToOtherDiariesScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtherDiariesScreen(
+          selectedDay: _selectedDay!,
+        ),
+      ),
+    );
+  }
+
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout, // 로그아웃 버튼 클릭 시 호출될 함수
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -111,6 +141,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
             ],
+            ElevatedButton(
+              onPressed: _navigateToOtherDiariesScreen, // 다른 사람의 일기를 볼 수 있는 버튼
+              child: Text('View Other Diaries'),
+            ),
           ],
         ],
       ),
