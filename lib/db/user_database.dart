@@ -5,19 +5,19 @@ class User {
   final int? id;
   final String username;
   final String password;
-  final String name; // 새로운 필드 추가
-  final String birthdate; // 새로운 필드 추가
-  final String phoneNumber; // 새로운 필드 추가
-  final String platoon; // 새로운 필드 추가
+  final String name;
+  final String birthdate;
+  final String phoneNumber;
+  final String platoon;
 
   User({
     this.id,
     required this.username,
     required this.password,
-    required this.name, // 새로운 필드 초기화
-    required this.birthdate, // 새로운 필드 초기화
-    required this.phoneNumber, // 새로운 필드 초기화
-    required this.platoon, // 새로운 필드 초기화
+    required this.name,
+    required this.birthdate,
+    required this.phoneNumber,
+    required this.platoon,
   });
 
   User copyWith({
@@ -69,7 +69,7 @@ class UserFields {
     name,
     birthdate,
     phoneNumber,
-    platoon
+    platoon,
   ];
 
   static const String id = '_id';
@@ -144,6 +144,23 @@ CREATE TABLE users (
       columns: UserFields.values,
       where: '${UserFields.username} = ?',
       whereArgs: [username],
+    );
+
+    if (maps.isNotEmpty) {
+      return User.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<User?> fetchUserById(int id) async {
+    final db = await instance.database;
+
+    final maps = await db.query(
+      'users',
+      columns: UserFields.values,
+      where: '${UserFields.id} = ?',
+      whereArgs: [id],
     );
 
     if (maps.isNotEmpty) {

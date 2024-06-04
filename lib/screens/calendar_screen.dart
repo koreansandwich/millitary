@@ -37,6 +37,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (selectedDay.isAfter(DateTime.now())) {
+      return; // 미래 날짜는 선택하지 않도록 함
+    }
     setState(() {
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
@@ -140,7 +143,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     outsideDaysVisible: false,
                     weekendTextStyle: TextStyle(color: Colors.green),
                     holidayTextStyle: TextStyle(color: Colors.red),
+                    disabledTextStyle:
+                        TextStyle(color: Colors.grey), // 선택 불가능한 날짜 스타일
                   ),
+                  enabledDayPredicate: (day) {
+                    return !day.isAfter(DateTime.now()); // 미래 날짜는 비활성화
+                  },
                   headerStyle: HeaderStyle(
                     formatButtonVisible: false,
                     titleCentered: true,
@@ -166,6 +174,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           ),
           if (_selectedDay != null) ...[
+            SizedBox(height: 10), // 버튼 간격 추가
             if (_diary == null) ...[
               ElevatedButton(
                 onPressed: _navigateToDiaryScreen,
@@ -192,6 +201,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
                 child: Text('일기 보기/수정하기'),
               ),
+              SizedBox(height: 10), // 버튼 간격 추가
               ElevatedButton(
                 onPressed: () async {
                   await DiaryDatabase.instance.deleteDiary(_diary!.id!);
@@ -210,6 +220,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Text('일기 지우기'),
               ),
             ],
+            SizedBox(height: 10), // 버튼 간격 추가
             ElevatedButton(
               onPressed: _navigateToOtherDiariesScreen, // 다른 사람의 일기를 볼 수 있는 버튼
               style: ElevatedButton.styleFrom(
