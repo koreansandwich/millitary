@@ -177,7 +177,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: Text('Write Diary'),
+                child: Text('일기 쓰기'),
               ),
             ] else ...[
               ElevatedButton(
@@ -190,7 +190,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: Text('View/Edit Diary'),
+                child: Text('일기 보기/수정하기'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -207,7 +207,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: Text('Delete Diary'),
+                child: Text('일기 지우기'),
               ),
             ],
             ElevatedButton(
@@ -220,7 +220,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: Text('View Other Diaries'),
+              child: Text('소대원 일기 보기'),
             ),
           ],
         ],
