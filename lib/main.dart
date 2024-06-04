@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_diary_app/screens/login_screen.dart';
-import 'package:my_diary_app/db/user_database.dart'; // 유저 데이터베이스 import 추가
-import 'package:my_diary_app/db/diary_database.dart'; // 다이어리 데이터베이스 import 추가
+import 'package:my_diary_app/db/user_database.dart';
+import 'package:my_diary_app/db/diary_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

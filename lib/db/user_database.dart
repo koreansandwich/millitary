@@ -5,22 +5,38 @@ class User {
   final int? id;
   final String username;
   final String password;
+  final String name; // 새로운 필드 추가
+  final String birthdate; // 새로운 필드 추가
+  final String phoneNumber; // 새로운 필드 추가
+  final String platoon; // 새로운 필드 추가
 
   User({
     this.id,
     required this.username,
     required this.password,
+    required this.name, // 새로운 필드 초기화
+    required this.birthdate, // 새로운 필드 초기화
+    required this.phoneNumber, // 새로운 필드 초기화
+    required this.platoon, // 새로운 필드 초기화
   });
 
   User copyWith({
     int? id,
     String? username,
     String? password,
+    String? name,
+    String? birthdate,
+    String? phoneNumber,
+    String? platoon,
   }) {
     return User(
       id: id ?? this.id,
       username: username ?? this.username,
       password: password ?? this.password,
+      name: name ?? this.name,
+      birthdate: birthdate ?? this.birthdate,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      platoon: platoon ?? this.platoon,
     );
   }
 
@@ -28,21 +44,41 @@ class User {
         UserFields.id: id,
         UserFields.username: username,
         UserFields.password: password,
+        UserFields.name: name,
+        UserFields.birthdate: birthdate,
+        UserFields.phoneNumber: phoneNumber,
+        UserFields.platoon: platoon,
       };
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json[UserFields.id],
         username: json[UserFields.username],
         password: json[UserFields.password],
+        name: json[UserFields.name],
+        birthdate: json[UserFields.birthdate],
+        phoneNumber: json[UserFields.phoneNumber],
+        platoon: json[UserFields.platoon],
       );
 }
 
 class UserFields {
-  static final List<String> values = [id, username, password];
+  static final List<String> values = [
+    id,
+    username,
+    password,
+    name,
+    birthdate,
+    phoneNumber,
+    platoon
+  ];
 
   static const String id = '_id';
   static const String username = 'username';
   static const String password = 'password';
+  static const String name = 'name';
+  static const String birthdate = 'birthdate';
+  static const String phoneNumber = 'phoneNumber';
+  static const String platoon = 'platoon';
 }
 
 class UserDatabase {
@@ -74,7 +110,11 @@ class UserDatabase {
 CREATE TABLE users ( 
   ${UserFields.id} $idType, 
   ${UserFields.username} $textType,
-  ${UserFields.password} $textType
+  ${UserFields.password} $textType,
+  ${UserFields.name} $textType,
+  ${UserFields.birthdate} $textType,
+  ${UserFields.phoneNumber} $textType,
+  ${UserFields.platoon} $textType
   )
 ''');
   }
@@ -97,7 +137,6 @@ CREATE TABLE users (
   }
 
   Future<User?> fetchUserByUsername(String username) async {
-    // 새로운 메소드 추가
     final db = await instance.database;
 
     final maps = await db.query(
@@ -143,7 +182,7 @@ CREATE TABLE users (
 
   Future<void> deleteDatabaseFile() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'diaries.db');
+    final path = join(dbPath, 'users.db');
 
     await deleteDatabase(path);
   }

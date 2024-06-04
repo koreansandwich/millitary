@@ -10,14 +10,25 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
+  String _name = ''; // 이름 필드 추가
+  String _birthdate = ''; // 생년월일 필드 추가
+  String _phoneNumber = ''; // 휴대폰 번호 필드 추가
+  String _platoon = ''; // 소대 이름 필드 추가
 
   Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      User newUser = User(username: _username, password: _password);
+      User newUser = User(
+        username: _username,
+        password: _password,
+        name: _name,
+        birthdate: _birthdate,
+        phoneNumber: _phoneNumber,
+        platoon: _platoon,
+      );
       await UserDatabase.instance.insertUser(newUser);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign Up Successful')),
+        SnackBar(content: Text('회원가입이 완료되었습니다.')),
       );
       Navigator.pop(context);
     }
@@ -26,8 +37,15 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF8BC34A), // 배경 색상 변경
       appBar: AppBar(
-        title: Text('Sign Up'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+              color: Colors.white, size: 30), // 크기와 색상 변경
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,35 +56,162 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Username'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a username';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _username = value!;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _password = value!;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _signup,
-                    child: Text('Sign Up'),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '아이디',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '아이디를 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _username = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '비밀번호',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '비밀번호를 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _password = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '이름',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '이름을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _name = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '생년월일 (YYYY-MM-DD)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '생년월일을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _birthdate = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '휴대폰 번호',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '휴대폰 번호를 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _phoneNumber = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '소대 이름',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '소대 이름을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _platoon = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: _signup,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF8BC34A), // 버튼 배경색
+                            foregroundColor: Colors.white, // 버튼 글자색
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 15),
+                            textStyle: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: Text('회원가입'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
