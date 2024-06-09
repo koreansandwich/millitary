@@ -9,6 +9,7 @@ class Diary {
   final int userId;
   final String platoon;
   final String battalion;
+  final String? imagePath; // 이미지 경로 추가
 
   Diary({
     this.id,
@@ -18,6 +19,7 @@ class Diary {
     required this.userId,
     required this.platoon,
     required this.battalion,
+    this.imagePath, // 이미지 경로 추가
   });
 
   Diary copyWith({
@@ -28,6 +30,7 @@ class Diary {
     int? userId,
     String? platoon,
     String? battalion,
+    String? imagePath, // 이미지 경로 추가
   }) {
     return Diary(
       id: id ?? this.id,
@@ -37,6 +40,7 @@ class Diary {
       userId: userId ?? this.userId,
       platoon: platoon ?? this.platoon,
       battalion: battalion ?? this.battalion,
+      imagePath: imagePath ?? this.imagePath, // 이미지 경로 추가
     );
   }
 
@@ -48,6 +52,7 @@ class Diary {
         DiaryFields.userId: userId,
         DiaryFields.platoon: platoon,
         DiaryFields.battalion: battalion,
+        DiaryFields.imagePath: imagePath, // 이미지 경로 추가
       };
 
   factory Diary.fromJson(Map<String, dynamic> json) => Diary(
@@ -58,6 +63,7 @@ class Diary {
         userId: json[DiaryFields.userId],
         platoon: json[DiaryFields.platoon],
         battalion: json[DiaryFields.battalion],
+        imagePath: json[DiaryFields.imagePath], // 이미지 경로 추가
       );
 }
 
@@ -69,7 +75,8 @@ class DiaryFields {
     isPublic,
     userId,
     platoon,
-    battalion
+    battalion,
+    imagePath, // 이미지 경로 추가
   ];
 
   static const String id = '_id';
@@ -79,6 +86,7 @@ class DiaryFields {
   static const String userId = 'userId';
   static const String platoon = 'platoon';
   static const String battalion = 'battalion';
+  static const String imagePath = 'imagePath'; // 이미지 경로 추가
 }
 
 class DiaryDatabase {
@@ -99,7 +107,8 @@ class DiaryDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path,
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -116,9 +125,17 @@ CREATE TABLE diaries (
   ${DiaryFields.isPublic} $boolType,
   ${DiaryFields.userId} $intType,
   ${DiaryFields.platoon} $textType,
-  ${DiaryFields.battalion} $textType
+  ${DiaryFields.battalion} $textType,
+  ${DiaryFields.imagePath} $textType
   )
 ''');
+  }
+
+  Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+          'ALTER TABLE diaries ADD COLUMN ${DiaryFields.imagePath} TEXT');
+    }
   }
 
   Future<Diary?> fetchDiaryByDate(String date, int userId) async {

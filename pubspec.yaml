@@ -35,6 +35,8 @@ dependencies:
   path: ^1.8.0
   image_picker: ^0.8.4+3
   intl: ^0.17.0
+  http: ^0.13.3
+  csv: ^5.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

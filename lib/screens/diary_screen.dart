@@ -7,7 +7,7 @@ import 'package:my_diary_app/db/user_database.dart';
 class DiaryScreen extends StatefulWidget {
   final DateTime selectedDay;
   final Diary? diary;
-  final User user; // User 객체 사용
+  final User user;
 
   const DiaryScreen({
     Key? key,
@@ -31,6 +31,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
     if (widget.diary != null) {
       _diaryController.text = widget.diary!.content;
       _isPublic = widget.diary!.isPublic;
+      if (widget.diary!.imagePath != null) {
+        _image = File(widget.diary!.imagePath!);
+      }
     }
   }
 
@@ -62,6 +65,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
           userId: widget.user.id!,
           platoon: widget.user.platoon,
           battalion: widget.user.battalion,
+          imagePath: _image?.path,
         );
         await DiaryDatabase.instance.insertDiary(diary);
       } else {
@@ -71,6 +75,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
           userId: widget.user.id!,
           platoon: widget.user.platoon,
           battalion: widget.user.battalion,
+          imagePath: _image?.path,
         );
         await DiaryDatabase.instance.updateDiary(updatedDiary);
       }
@@ -88,7 +93,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8BC34A), // 상단 배경색을 초록색으로 변경
+        backgroundColor: Color(0xFF8BC34A),
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
@@ -99,11 +104,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        // 스크롤 가능하도록 수정
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: 200,

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:my_diary_app/db/diary_database.dart';
 import 'package:my_diary_app/db/user_database.dart';
+import 'dart:io';
 
 class OtherDiariesScreen extends StatelessWidget {
   final DateTime selectedDay;
-  final User user; // 추가된 필드
+  final User user;
 
   const OtherDiariesScreen({
     Key? key,
     required this.selectedDay,
-    required this.user, // 추가된 필드
+    required this.user,
   }) : super(key: key);
 
   Future<List<Diary>> _fetchOtherDiaries() async {
     return await DiaryDatabase.instance.fetchPublicDiariesByDate(
       selectedDay.toIso8601String(),
-      user.platoon, // 변경된 부분
-      user.battalion, // 변경된 부분
+      user.platoon,
+      user.battalion,
     );
   }
 
@@ -60,8 +60,6 @@ class OtherDiariesScreen extends StatelessWidget {
                       );
                     } else {
                       final user = userSnapshot.data!;
-                      final formattedDate = DateFormat('HH:mm:ss')
-                          .format(DateTime.parse(diary.date));
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
@@ -83,22 +81,22 @@ class OtherDiariesScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.person, color: Colors.grey),
-                                      SizedBox(width: 8),
-                                      Text(user.username,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Text(formattedDate,
-                                      style: TextStyle(color: Colors.grey)),
+                                  Icon(Icons.person, color: Colors.grey),
+                                  SizedBox(width: 8),
+                                  Text(user.username,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
+                              SizedBox(height: 8),
+                              if (diary.imagePath != null)
+                                Image.file(
+                                  File(diary.imagePath!),
+                                  fit: BoxFit.cover,
+                                  height: 200,
+                                  width: double.infinity,
+                                ),
                               SizedBox(height: 8),
                               Text(diary.content),
                             ],

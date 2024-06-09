@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:my_diary_app/screens/other_diaries_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:my_diary_app/db/diary_database.dart';
-import 'package:my_diary_app/screens/diary_screen.dart'; // 추가된 임포트
-import 'package:my_diary_app/db/user_database.dart'; // 추가된 임포트
+import 'package:my_diary_app/screens/diary_screen.dart';
+import 'package:my_diary_app/db/user_database.dart';
 import 'package:my_diary_app/screens/login_screen.dart';
+import 'package:my_diary_app/screens/meal_screen.dart'; // 추가된 임포트
 
 class CalendarScreen extends StatefulWidget {
   final User user; // User 객체를 사용
@@ -71,6 +72,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
         builder: (context) => OtherDiariesScreen(
           selectedDay: _selectedDay!,
           user: widget.user, // User 객체 전달
+        ),
+      ),
+    );
+  }
+
+  Future<void> _navigateToMealScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MealScreen(
+          selectedDay: _selectedDay!,
+          platoon: widget.user.platoon,
+          company: widget.user.company, // 'battalion'을 'company'로 수정
         ),
       ),
     );
@@ -236,6 +250,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
               ),
               child: Text('소대원 일기 보기'),
+            ),
+            SizedBox(height: 10), // 버튼 간격 추가
+            ElevatedButton(
+              onPressed: _navigateToMealScreen, // 식단 보기 버튼
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Text('식단 보기'),
             ),
           ],
         ],
