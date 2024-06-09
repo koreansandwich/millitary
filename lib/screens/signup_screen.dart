@@ -10,10 +10,12 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
-  String _name = ''; // 이름 필드 추가
-  String _birthdate = ''; // 생년월일 필드 추가
-  String _phoneNumber = ''; // 휴대폰 번호 필드 추가
-  String _platoon = ''; // 소대 이름 필드 추가
+  String _name = '';
+  String _birthdate = '';
+  String _phoneNumber = '';
+  String _platoon = '';
+  String _battalion = '';
+  String _company = '';
 
   Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
@@ -25,6 +27,8 @@ class _SignupScreenState extends State<SignupScreen> {
         birthdate: _birthdate,
         phoneNumber: _phoneNumber,
         platoon: _platoon,
+        battalion: _battalion,
+        company: _company,
       );
       await UserDatabase.instance.insertUser(newUser);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -37,13 +41,12 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8BC34A), // 배경 색상 변경
+      backgroundColor: Color(0xFF8BC34A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.white, size: 30), // 크기와 색상 변경
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -175,6 +178,46 @@ class _SignupScreenState extends State<SignupScreen> {
                         SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
+                            labelText: '부대 이름',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '부대 이름을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _company = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '중대 이름',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '중대 이름을 입력해주세요.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _battalion = value!;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
                             labelText: '소대 이름',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -196,8 +239,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ElevatedButton(
                           onPressed: _signup,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF8BC34A), // 버튼 배경색
-                            foregroundColor: Colors.white, // 버튼 글자색
+                            backgroundColor: Color(0xFF8BC34A),
+                            foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 15),
                             textStyle: TextStyle(

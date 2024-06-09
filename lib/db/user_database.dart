@@ -9,6 +9,8 @@ class User {
   final String birthdate;
   final String phoneNumber;
   final String platoon;
+  final String battalion; // 중대 필드 추가
+  final String company; // 부대 필드 추가
 
   User({
     this.id,
@@ -18,6 +20,8 @@ class User {
     required this.birthdate,
     required this.phoneNumber,
     required this.platoon,
+    required this.battalion,
+    required this.company,
   });
 
   User copyWith({
@@ -28,6 +32,8 @@ class User {
     String? birthdate,
     String? phoneNumber,
     String? platoon,
+    String? battalion,
+    String? company,
   }) {
     return User(
       id: id ?? this.id,
@@ -37,6 +43,8 @@ class User {
       birthdate: birthdate ?? this.birthdate,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       platoon: platoon ?? this.platoon,
+      battalion: battalion ?? this.battalion,
+      company: company ?? this.company,
     );
   }
 
@@ -48,6 +56,8 @@ class User {
         UserFields.birthdate: birthdate,
         UserFields.phoneNumber: phoneNumber,
         UserFields.platoon: platoon,
+        UserFields.battalion: battalion,
+        UserFields.company: company,
       };
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -58,6 +68,8 @@ class User {
         birthdate: json[UserFields.birthdate],
         phoneNumber: json[UserFields.phoneNumber],
         platoon: json[UserFields.platoon],
+        battalion: json[UserFields.battalion],
+        company: json[UserFields.company],
       );
 }
 
@@ -70,6 +82,8 @@ class UserFields {
     birthdate,
     phoneNumber,
     platoon,
+    battalion,
+    company,
   ];
 
   static const String id = '_id';
@@ -79,6 +93,8 @@ class UserFields {
   static const String birthdate = 'birthdate';
   static const String phoneNumber = 'phoneNumber';
   static const String platoon = 'platoon';
+  static const String battalion = 'battalion';
+  static const String company = 'company';
 }
 
 class UserDatabase {
@@ -114,7 +130,9 @@ CREATE TABLE users (
   ${UserFields.name} $textType,
   ${UserFields.birthdate} $textType,
   ${UserFields.phoneNumber} $textType,
-  ${UserFields.platoon} $textType
+  ${UserFields.platoon} $textType,
+  ${UserFields.battalion} $textType,
+  ${UserFields.company} $textType
   )
 ''');
   }

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:my_diary_app/db/diary_database.dart';
+import 'package:my_diary_app/db/user_database.dart';
 
 class DiaryScreen extends StatefulWidget {
   final DateTime selectedDay;
   final Diary? diary;
-  final int userId;
+  final User user; // User 객체 사용
 
   const DiaryScreen({
     Key? key,
     required this.selectedDay,
     this.diary,
-    required this.userId,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -58,14 +59,18 @@ class _DiaryScreenState extends State<DiaryScreen> {
           date: widget.selectedDay.toIso8601String(),
           content: _diaryController.text,
           isPublic: _isPublic,
-          userId: widget.userId,
+          userId: widget.user.id!,
+          platoon: widget.user.platoon,
+          battalion: widget.user.battalion,
         );
         await DiaryDatabase.instance.insertDiary(diary);
       } else {
         final updatedDiary = widget.diary!.copyWith(
           content: _diaryController.text,
           isPublic: _isPublic,
-          userId: widget.userId,
+          userId: widget.user.id!,
+          platoon: widget.user.platoon,
+          battalion: widget.user.battalion,
         );
         await DiaryDatabase.instance.updateDiary(updatedDiary);
       }

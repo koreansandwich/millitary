@@ -3,12 +3,12 @@ import 'package:my_diary_app/screens/other_diaries_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:my_diary_app/db/diary_database.dart';
 import 'package:my_diary_app/screens/diary_screen.dart'; // 추가된 임포트
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:my_diary_app/db/user_database.dart'; // 추가된 임포트
+import 'package:my_diary_app/screens/login_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
-  final int userId;
-  const CalendarScreen({Key? key, required this.userId}) : super(key: key);
+  final User user; // User 객체를 사용
+  const CalendarScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   _CalendarScreenState createState() => _CalendarScreenState();
@@ -29,7 +29,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Future<void> _fetchDiary() async {
     if (_selectedDay != null) {
       final diary = await DiaryDatabase.instance
-          .fetchDiaryByDate(_selectedDay!.toIso8601String(), widget.userId);
+          .fetchDiaryByDate(_selectedDay!.toIso8601String(), widget.user.id!);
       setState(() {
         _diary = diary;
       });
@@ -54,7 +54,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         builder: (context) => DiaryScreen(
           selectedDay: _selectedDay!,
           diary: _diary,
-          userId: widget.userId,
+          user: widget.user,
         ),
       ),
     );
@@ -70,13 +70,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
       MaterialPageRoute(
         builder: (context) => OtherDiariesScreen(
           selectedDay: _selectedDay!,
+          user: widget.user, // User 객체 전달
         ),
       ),
     );
   }
 
   void _logout() {
-    Navigator.pop(context); // 로그아웃 시 로그인 화면으로 돌아가기
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
   @override

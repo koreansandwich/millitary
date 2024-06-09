@@ -6,14 +6,18 @@ class Diary {
   final String date;
   final String content;
   final bool isPublic;
-  final int userId; // 사용자 식별자 추가
+  final int userId;
+  final String platoon;
+  final String battalion;
 
   Diary({
     this.id,
     required this.date,
     required this.content,
     required this.isPublic,
-    required this.userId, // 사용자 식별자 초기화
+    required this.userId,
+    required this.platoon,
+    required this.battalion,
   });
 
   Diary copyWith({
@@ -22,13 +26,17 @@ class Diary {
     String? content,
     bool? isPublic,
     int? userId,
+    String? platoon,
+    String? battalion,
   }) {
     return Diary(
       id: id ?? this.id,
       date: date ?? this.date,
       content: content ?? this.content,
       isPublic: isPublic ?? this.isPublic,
-      userId: userId ?? this.userId, // 사용자 식별자 복사
+      userId: userId ?? this.userId,
+      platoon: platoon ?? this.platoon,
+      battalion: battalion ?? this.battalion,
     );
   }
 
@@ -38,6 +46,8 @@ class Diary {
         DiaryFields.content: content,
         DiaryFields.isPublic: isPublic ? 1 : 0,
         DiaryFields.userId: userId,
+        DiaryFields.platoon: platoon,
+        DiaryFields.battalion: battalion,
       };
 
   factory Diary.fromJson(Map<String, dynamic> json) => Diary(
@@ -46,17 +56,29 @@ class Diary {
         content: json[DiaryFields.content],
         isPublic: json[DiaryFields.isPublic] == 1,
         userId: json[DiaryFields.userId],
+        platoon: json[DiaryFields.platoon],
+        battalion: json[DiaryFields.battalion],
       );
 }
 
 class DiaryFields {
-  static final List<String> values = [id, date, content, isPublic, userId];
+  static final List<String> values = [
+    id,
+    date,
+    content,
+    isPublic,
+    userId,
+    platoon,
+    battalion
+  ];
 
   static const String id = '_id';
   static const String date = 'date';
   static const String content = 'content';
   static const String isPublic = 'isPublic';
-  static const String userId = 'userId'; // 사용자 식별자 필드 추가
+  static const String userId = 'userId';
+  static const String platoon = 'platoon';
+  static const String battalion = 'battalion';
 }
 
 class DiaryDatabase {
@@ -92,13 +114,14 @@ CREATE TABLE diaries (
   ${DiaryFields.date} $textType,
   ${DiaryFields.content} $textType,
   ${DiaryFields.isPublic} $boolType,
-  ${DiaryFields.userId} $intType
+  ${DiaryFields.userId} $intType,
+  ${DiaryFields.platoon} $textType,
+  ${DiaryFields.battalion} $textType
   )
 ''');
   }
 
   Future<Diary?> fetchDiaryByDate(String date, int userId) async {
-    // 수정된 부분: userId 추가
     final db = await instance.database;
 
     final maps = await db.query(
@@ -115,14 +138,16 @@ CREATE TABLE diaries (
     }
   }
 
-  Future<List<Diary>> fetchPublicDiariesByDate(String date) async {
+  Future<List<Diary>> fetchPublicDiariesByDate(
+      String date, String platoon, String battalion) async {
     final db = await instance.database;
 
     final maps = await db.query(
       'diaries',
       columns: DiaryFields.values,
-      where: '${DiaryFields.date} = ? AND ${DiaryFields.isPublic} = 1',
-      whereArgs: [date],
+      where:
+          '${DiaryFields.date} = ? AND ${DiaryFields.isPublic} = 1 AND ${DiaryFields.platoon} = ? AND ${DiaryFields.battalion} = ?',
+      whereArgs: [date, platoon, battalion],
     );
 
     return maps.map((json) => Diary.fromJson(json)).toList();

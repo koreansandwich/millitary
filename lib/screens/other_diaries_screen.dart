@@ -5,13 +5,20 @@ import 'package:my_diary_app/db/user_database.dart';
 
 class OtherDiariesScreen extends StatelessWidget {
   final DateTime selectedDay;
+  final User user; // 추가된 필드
 
-  const OtherDiariesScreen({Key? key, required this.selectedDay})
-      : super(key: key);
+  const OtherDiariesScreen({
+    Key? key,
+    required this.selectedDay,
+    required this.user, // 추가된 필드
+  }) : super(key: key);
 
   Future<List<Diary>> _fetchOtherDiaries() async {
-    return await DiaryDatabase.instance
-        .fetchPublicDiariesByDate(selectedDay.toIso8601String());
+    return await DiaryDatabase.instance.fetchPublicDiariesByDate(
+      selectedDay.toIso8601String(),
+      user.platoon, // 변경된 부분
+      user.battalion, // 변경된 부분
+    );
   }
 
   @override
