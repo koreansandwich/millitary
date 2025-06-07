@@ -1,3 +1,6 @@
+> 📌 본 프로젝트는 [2024년 국방 공공데이터 활용 경진대회]에 출품되었으며, 시제품 형태로 제출되었습니다. 수상에는 이르지 못했지만, 병영 환경 내 기록 공유라는 아이디어에 초점을 두고 개발되었습니다.
+
+
 # MilDiary 🌟
 
 MilDiary is a mobile diary application built with Flutter and Sqflite, designed for military units to log daily events, personal reflections, and access platoon-wide shared entries and meal schedules.
@@ -98,3 +101,4 @@ This app was developed as a personal capstone-like project, targeting soldiers w
 - Notification feature for diary reminders  
 - Expanded text support (currently limited to 20 characters)  
 - UI optimization with Riverpod or BLoC  
+
