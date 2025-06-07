@@ -52,10 +52,22 @@ lib/
 
 ## ⚙️ Tech Stack
 
-- **Frontend:** Flutter (Material UI, TableCalendar, Image Picker)  
-- **Database:** Sqflite (local SQLite)  
-- **Data Fetching:** HTTP package, Google Drive CSV download  
-- **Architecture:** StatefulWidget + custom DB helper classes  
+### Frontend  
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)  
+![Material UI](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=mui&logoColor=white)  
+![TableCalendar](https://img.shields.io/badge/TableCalendar-%2312100E?style=for-the-badge&logo=googlecalendar&logoColor=white)  
+![Image Picker](https://img.shields.io/badge/Image%20Picker-FFCC00?style=for-the-badge)
+
+### Database  
+![Sqflite](https://img.shields.io/badge/Sqflite-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+
+### Data Fetching  
+![HTTP](https://img.shields.io/badge/HTTP_Package-00ADD8?style=for-the-badge)  
+![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)
+
+### Architecture  
+![StatefulWidget](https://img.shields.io/badge/StatefulWidget-009688?style=for-the-badge)  
+![Custom DB Helper](https://img.shields.io/badge/Custom%20DB%20Helper-607D8B?style=for-the-badge)
 
 ---
 
